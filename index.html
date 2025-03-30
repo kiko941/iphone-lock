@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экран блокировки iPhone</title>
+    <style>
+        body {
+            background: url('default-wallpaper.jpg') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            flex-direction: column;
+        }
+        .lock-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .key {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            user-select: none;
+        }
+        .hidden {
+            display: none;
+        }
+        .small-text {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="lock-screen" id="lockScreen">
+        <p>Введите код-пароль</p>
+        <div id="passwordDisplay">&#9679; &#9679; &#9679; &#9679;</div>
+        <div class="keypad" id="keypad">
+            <div class="key" onclick="enterDigit(1)">1</div>
+            <div class="key" onclick="enterDigit(2)">2</div>
+            <div class="key" onclick="enterDigit(3)">3</div>
+            <div class="key" onclick="enterDigit(4)">4</div>
+            <div class="key" onclick="enterDigit(5)">5</div>
+            <div class="key" onclick="enterDigit(6)">6</div>
+            <div class="key" onclick="enterDigit(7)">7</div>
+            <div class="key" onclick="enterDigit(8)">8</div>
+            <div class="key" onclick="enterDigit(9)">9</div>
+            <div></div>
+            <div class="key" onclick="enterDigit(0)">0</div>
+            <div class="key" onclick="deleteDigit()">⌫</div>
+        </div>
+        <p id="savedPassword" class="small-text hidden"></p>
+    </div>
+    <script>
+        let password = "";
+        function enterDigit(digit) {
+            if (password.length < 4) {
+                password += digit;
+                updateDisplay();
+            }
+            if (password.length === 4) {
+                setTimeout(() => {
+                    localStorage.setItem('savedPassword', password);
+                    document.body.style.background = `url('custom-wallpaper.jpg') no-repeat center center/cover`;
+                    document.getElementById('savedPassword').innerText = 'Пароль: ' + password;
+                    document.getElementById('savedPassword').classList.remove('hidden');
+                    document.getElementById('lockScreen').classList.add('hidden');
+                }, 500);
+            }
+        }
+        function deleteDigit() {
+            password = password.slice(0, -1);
+            updateDisplay();
+        }
+        function updateDisplay() {
+            let dots = "";
+            for (let i = 0; i < password.length; i++) {
+                dots += "● ";
+            }
+            for (let i = password.length; i < 4; i++) {
+                dots += "○ ";
+            }
+            document.getElementById('passwordDisplay').innerHTML = dots;
+        }
+    </script>
+</body>
+</html>
